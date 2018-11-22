@@ -17,6 +17,16 @@ class VistaTest extends TestCase
             ->assertSuccessful();
     }
 
+
+
+    public function testVista2()
+    {
+        $this->post("/2")
+            ->assertStatus(200)
+            ->assertSee("Debe seleccionar un banco")
+            ->assertSuccessful();
+    }
+
     public function testVista3()
     {
         $this->get("/3")

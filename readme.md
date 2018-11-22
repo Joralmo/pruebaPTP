@@ -69,8 +69,9 @@ Se tienen 3 rutas
 3. /3 : Ruta la cual hace el llamado a *reingreso()* del controlador *TransactionController* y le muestra una tabla al usuario con la información retornada por el método
 
 --- ---
-Hay 2 pruebas unitarias que verifican
+Hay 3 pruebas unitarias que verifican
 1. Si la ruta "/" responde con un status 200 y además si existe el banco de prueba BANCO UNION COLOMBIANO
+2. Si la ruta "/2" al no seleccionar ningun banco retorna el mensaje de error 'Debe seleccionar un banco'
 2. Si la ruta "/3" responde con un status 200 y además si existe el texto "Información"
 
 para ejecutar las pruebas correr

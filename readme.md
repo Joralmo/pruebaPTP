@@ -67,3 +67,18 @@ Se tienen 3 rutas
 1. / : Ruta principal que hace el llamado al método *formulario()* del controlador *TransactionController* y muestra al usuario la lista de bancos y para que elija si es *PERSONA* o *EMPRESA* y un botón de continuar que envía a la siguiente ruta.
 2. /2 : Ruta la cual hace el llamado al metodo *segVista()* del controlador *TransactionController* y solo retorna una vista si el código de respuesta es diferente a *SUCCESS* y muestra el mensaje de error.
 3. /3 : Ruta la cual hace el llamado a *reingreso()* del controlador *TransactionController* y le muestra una tabla al usuario con la información retornada por el método
+
+--- ---
+Hay 2 pruebas unitarias que verifican
+1. Si la ruta "/" responde con un status 200 y además si existe el banco de prueba BANCO UNION COLOMBIANO
+2. Si la ruta "/3" responde con un status 200 y además si existe el texto "Información"
+
+para ejecutar las pruebas correr
+
+```bash
+vendor/bin/phpunit
+```
+o
+```bash
+phpunit
+```

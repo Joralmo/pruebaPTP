@@ -7,19 +7,21 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 
-class PrimeraVistaTest extends TestCase
+class VistaTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function testVista()
+    public function testVista1()
     {
         $this->get("/")
             ->assertStatus(200)
             ->assertSee("BANCO UNION COLOMBIANO")
-            ->assertSuccessful()
-            ->click('Continuar');
+            ->assertSuccessful();
+    }
+
+    public function testVista3()
+    {
+        $this->get("/3")
+            ->assertStatus(200)
+            ->assertSee("Información")
+            ->assertSuccessful();
     }
 }

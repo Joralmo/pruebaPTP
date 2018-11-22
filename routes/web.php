@@ -1,5 +1,7 @@
 <?php
 
+// use SoapClient;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,6 +13,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'TransactionController@formulario');
+Route::post('/2', 'TransactionController@segVista');
+Route::get('/3', 'TransactionController@reingreso');

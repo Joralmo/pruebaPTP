@@ -13,11 +13,11 @@ class DocumentTypes extends Migration
      */
     public function up()
     {
-        Schema::create('documentTypes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string("description", 3);
-            $table->timestamps();
-        });
+        // Schema::create('documentTypes', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->string("description", 3);
+        //     $table->timestamps();
+        // });
     }
 
     /**

@@ -16,13 +16,13 @@ class Persons extends Migration
         Schema::create('persons', function (Blueprint $table) {
             $table->increments('id');
             $table->string("document", 12);
-            $table->integer("documentType")->unsigned();
-            $table->foreign("documentType")->references("id")->on("documentTypes")->onDelete("cascade");
+            $table->string("documentType", 3); //->unsigned();
+            // $table->foreign("documentType")->references("id")->on("documentTypes")->onDelete("cascade");
             $table->string("firstName", 60);
             $table->string("lastName", 60);
             $table->string("company", 60);
-            $table->string("emailAddres", 80);
-            $table->string("addres", 100);
+            $table->string("emailAddress", 80);
+            $table->string("address", 100);
             $table->string("city", 50);
             $table->string("province", 50);
             $table->string("country", 2);

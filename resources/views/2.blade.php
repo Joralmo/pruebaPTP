@@ -6,11 +6,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Formulario</title>
+    <title>¡Opps!</title>
 </head>
 
 <body>
-    Hola 2
+    Ha ocurrido un error:<br>
     {{$error}}
 </body>
 

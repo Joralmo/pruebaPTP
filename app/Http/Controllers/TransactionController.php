@@ -12,17 +12,14 @@ use SoapHelper;
 class TransactionController extends Controller
 {
     public function formulario(){
-        if(Cache::has("Banks")){
-            $array = Cache::get('Banks');
-            echo "Agarro del cache";
-            echo "<br>";
-        }else{
-            $array = SoapHelper::post("getBankList", ['body' => ['auth' => SoapHelper::auth()]])["getBankListResult"]["item"];
-            $minutos = now()->addMinutes(now()->diffInMinutes(now()::tomorrow()));
-            Cache::put("Banks", $array, $minutos);
-            echo "Cacheo";
-            echo "<br>";
-        }
+        // if(Cache::has("Banks")){
+        //     $array = Cache::get('Banks');
+        // }else{
+        //     $array = SoapHelper::post("getBankList", ['body' => ['auth' => SoapHelper::auth()]])["getBankListResult"]["item"];
+        //     $minutos = now()->addMinutes(now()->diffInMinutes(now()::tomorrow()));
+        //     Cache::put("Banks", $array, $minutos);
+        // }
+        $array = SoapHelper::post("getBankList", ['body' => ['auth' => SoapHelper::auth()]])["getBankListResult"]["item"];
         return view('1', ["array" => $array]);
     }
 
@@ -48,7 +45,7 @@ class TransactionController extends Controller
 
         $res = SoapHelper::post("createTransaction", ['body' => ['auth' => SoapHelper::auth(), 'transaction' => $PSETransactionRequest]]);
         
-        if($res["createTransactionResult"]["returnCode"] = "SUCCESS"){
+        if(isset($res) && $res["createTransactionResult"]["returnCode"] == "SUCCESS"){
             PseTransactionResponse::create($res["createTransactionResult"]);
             return redirect($res["createTransactionResult"]["bankURL"]);
         }else{
@@ -60,7 +57,6 @@ class TransactionController extends Controller
     public function reingreso(Request $request){
         $respuestaTransaccion = PseTransactionResponse::all()->last();
         $res = SoapHelper::post("getTransactionInformation", ['body' => ['auth' => SoapHelper::auth(), 'transactionID' => $respuestaTransaccion->transactionID]]);
-        var_dump($res);
-        return view('3');
+        return view('3', ["respuesta" => $res["getTransactionInformationResult"]]);
     }
 }

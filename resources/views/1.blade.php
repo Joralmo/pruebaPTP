@@ -10,29 +10,6 @@
 </head>
 
 <body>
-
-    <!-- <div class="form-group">
-        <div>
-            Indique el tipo de cuenta con que realizará el pago:<br>
-            <select class="form-control" name="item_id">
-                <option value="null">Tipo de interfaz</option>
-                <option value="0">PERSONA</option>
-                <option value="1">EMPRESA</option>
-            </select>
-        </div>
-        <div>
-            Seleccione de la lista la entidad financiera con la cual desea realizar el pago:<br>
-            <select class="form-control" name="item_id">
-                @foreach($array as $bank)
-                <option value="{{$bank['bankCode']}}">{{$bank['bankName']}}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-
-        </div>
-    </div> -->
-
     {{ Form::open(array('url' => '2', 'method' => 'post')) }}
         Indique el tipo de cuenta con que realizará el pago:<br>
         {{ Form::select('interfaz', array('0' => 'PERSONA', '1' => 'EMPRESA')) }}

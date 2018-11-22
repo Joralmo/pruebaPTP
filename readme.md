@@ -1,68 +1,69 @@
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
 
 <p align="center">
+
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
+
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
+
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
+
 </p>
 
-## About Laravel
+## Acerca del proyecto
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+Se tienen 2 migraciones importantes
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+>Persons
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
+>CreatePseTransactionResponsesTable
 
-## Learning Laravel
+Con los siguientes usos:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+1. Person: Es la encargada de crear la tabla de personas, y junto con el seed DatabaseSeeder permite simular algunas personas que son utilizadas al momento de simular una transacción.
+2. CreatePseTransactionResponsesTable: Que es la encargada de crear la tabla donde se almacena la información retornada despues de un createTransaction.
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+------
 
-## Laravel Sponsors
+Se tiene un seeder que con la ayuda de Faker ayuda a guardar 10 personas en la base de datos, esto corriendo
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+```bash
+php artisan db:seed
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
+------
 
-## Contributing
+Cada migración tiene su respectivo Modelo
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Person
+- PseTransactionResponse
 
-## Security Vulnerabilities
+Donde se define el nombre de la tabla en la BD y las columnas que queremos que se guarden en la BD
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+--- ---
 
-## License
+Además de eso se cuenta con un Helper (SoapHelper) el cual es utilizado para hacer las peticiones al endpoint (con el método *post*), recibe por parametros el método a ser llamado y los argumentos que este método espere y nos retorna en forma de array lo que responda dicho método, también cuenta con un método llamado *auth* que nos retorna un objeto *Authentication* que es requerido para poderle hacer peticiones al endpoint, un ejemplo de su uso sería:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```php
+$array = SoapHelper::post("getBankList", ['body' => ['auth' => SoapHelper::auth()]]);
+```
+
+Con esto tendríamos una lista de los bancos retornados por el método *getBankList* el cual espera como parametro un *auth* de tipo *Authentication*.
+
+--- ---
+
+Tenemos un controlador (TransactionController) que cuenta con 3 metodos:
+
+1. formulario(): Se encarga de retornar a la vista la lista de bancos la cual es tomada de la memoria caché si existe, de lo contrario se le solicita al endpoint y es cacheada hasta las 23:59 del día en que fue solicitada
+2. segVista(): Se encarga de crear el objeto *PSETransactionRequest* con la información necesaria enviada por el usuario en la vista del formulario, y se captura la ip y el agente navegador del cliente para entonces iniciar la transacción haciendo llamado al metodo *createTransaction* del endpoint, luego captura la respuesta y verifica si el código respuesta es *SUCCESS* y guarda los datos de respuesta en la tabla *pse_transaction_responses* de la BD y procede a redirigir al usuario a la url del banco retornada por el endpoint, si por el contrario el código de respuesta no es *SUCCESS* retornara a la vista con un mensaje de error.
+3. reingreso(): Se encarga de recibir la información obtenida al reingreso del usuario y hace un llamado al método *getTransactionInformation* del endpoint para solicitar información de la ultima transacción y retorna al usuario una vista donde se le es mostrada la información acerca de su transacción de una forma legible
+
+--- ---
+
+Se tienen 3 rutas
+
+1. / : Ruta principal que hace el llamado al método *formulario()* del controlador *TransactionController* y muestra al usuario la lista de bancos y para que elija si es *PERSONA* o *EMPRESA* y un botón de continuar que envía a la siguiente ruta.
+2. /2 : Ruta la cual hace el llamado al metodo *segVista()* del controlador *TransactionController* y solo retorna una vista si el código de respuesta es diferente a *SUCCESS* y muestra el mensaje de error.
+3. /3 : Ruta la cual hace el llamado a *reingreso()* del controlador *TransactionController* y le muestra una tabla al usuario con la información retornada por el método

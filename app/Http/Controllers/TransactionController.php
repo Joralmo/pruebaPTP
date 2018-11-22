@@ -12,14 +12,13 @@ use SoapHelper;
 class TransactionController extends Controller
 {
     public function formulario(){
-        // if(Cache::has("Banks")){
-        //     $array = Cache::get('Banks');
-        // }else{
-        //     $array = SoapHelper::post("getBankList", ['body' => ['auth' => SoapHelper::auth()]])["getBankListResult"]["item"];
-        //     $minutos = now()->addMinutes(now()->diffInMinutes(now()::tomorrow()));
-        //     Cache::put("Banks", $array, $minutos);
-        // }
-        $array = SoapHelper::post("getBankList", ['body' => ['auth' => SoapHelper::auth()]])["getBankListResult"]["item"];
+        if(Cache::has("Banks")){
+            $array = Cache::get('Banks');
+        }else{
+            $array = SoapHelper::post("getBankList", ['body' => ['auth' => SoapHelper::auth()]])["getBankListResult"]["item"];
+            $minutos = now()->addMinutes(now()->diffInMinutes(now()::tomorrow()));
+            Cache::put("Banks", $array, $minutos);
+        }
         return view('1', ["array" => $array]);
     }
 

@@ -16,7 +16,6 @@
         <br>
         Seleccione de la lista la entidad financiera con la cual desea realizar el pago:<br>
         <select class="form-control" name="bank">
-            <option value="1022">BANCO UNION COLOMBIANO</option>
             @foreach($array as $bank)
             <option value="{{$bank['bankCode']}}">{{$bank['bankName']}}</option>
             @endforeach

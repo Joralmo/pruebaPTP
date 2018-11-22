@@ -23,34 +23,37 @@ class TransactionController extends Controller
     }
 
     public function segVista(Request $request){
-        $PSETransactionRequest = [
-            "bankCode" =>$request->input('bank'),
-            "bankInterface" => $request->input('interfaz'),
-            "returnURL" => "http://localhost:8000/3",
-            "reference" => mt_rand(1,1234567891011121314),
-            "description" => "Nuevo pago de prueba",
-            "language" => "ES",
-            "currency" => "COP",
-            "totalAmount" => 123456,
-            "taxAmount" => 0,
-            "devolutionBase" => 0,
-            "tipAmount" => 0,
-            "payer" => Person::find(mt_rand(1,10)),
-            "buyer" => Person::find(mt_rand(1,10)),
-            "shipping" => Person::find(mt_rand(1,10)),
-            "ipAddress" => $request->ip(),
-            "userAgent" => $request->server('HTTP_USER_AGENT')
-        ];
-
-        $res = SoapHelper::post("createTransaction", ['body' => ['auth' => SoapHelper::auth(), 'transaction' => $PSETransactionRequest]]);
-        
-        if(isset($res) && $res["createTransactionResult"]["returnCode"] == "SUCCESS"){
-            PseTransactionResponse::create($res["createTransactionResult"]);
-            return redirect($res["createTransactionResult"]["bankURL"]);
+        if($request->input('bank')!=0){
+            $PSETransactionRequest = [
+                "bankCode" => $request->input('bank'),
+                "bankInterface" => $request->input('interfaz'),
+                "returnURL" => "http://localhost:8000/3",
+                "reference" => mt_rand(1,1234567891011121314),
+                "description" => "Nuevo pago de prueba",
+                "language" => "ES",
+                "currency" => "COP",
+                "totalAmount" => 123456,
+                "taxAmount" => 0,
+                "devolutionBase" => 0,
+                "tipAmount" => 0,
+                "payer" => Person::find(mt_rand(1,10)),
+                "buyer" => Person::find(mt_rand(1,10)),
+                "shipping" => Person::find(mt_rand(1,10)),
+                "ipAddress" => $request->ip(),
+                "userAgent" => $request->server('HTTP_USER_AGENT')
+            ];
+    
+            $res = SoapHelper::post("createTransaction", ['body' => ['auth' => SoapHelper::auth(), 'transaction' => $PSETransactionRequest]]);
+            
+            if(isset($res) && $res["createTransactionResult"]["returnCode"] == "SUCCESS"){
+                PseTransactionResponse::create($res["createTransactionResult"]);
+                return redirect($res["createTransactionResult"]["bankURL"]);
+            }else{
+                return view('2', ["error" => $res["createTransactionResult"]["responseReasonText"]]);
+            }
         }else{
-            return view('2', ["error" => $res["createTransactionResult"]["responseReasonText"]]);
+            return view('1', ["error" => "Debe seleccionar un banco"]);
         }
-        // var_dump(PseTransactionResponse::all()->last());
     }
 
     public function reingreso(Request $request){

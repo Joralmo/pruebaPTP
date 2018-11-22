@@ -10,20 +10,25 @@
 </head>
 
 <body>
-    {{ Form::open(array('url' => '2', 'method' => 'post')) }}
-        Indique el tipo de cuenta con que realizará el pago:<br>
-        {{ Form::select('interfaz', array('0' => 'PERSONA', '1' => 'EMPRESA')) }}
+    @if(isset($error))
+        {{$error}}
         <br>
-        Seleccione de la lista la entidad financiera con la cual desea realizar el pago:<br>
-        <select class="form-control" name="bank">
-            @foreach($array as $bank)
-            <option value="{{$bank['bankCode']}}">{{$bank['bankName']}}</option>
-            @endforeach
-        </select>
-        <br>
-        {{Form::submit('Continuar')}}
-    {{ Form::close() }}
-
+        <a href="/">Volver</a>
+    @else
+        {{ Form::open(array('url' => '2', 'method' => 'post')) }}
+            Indique el tipo de cuenta con que realizará el pago:<br>
+            {{ Form::select('interfaz', array('0' => 'PERSONA', '1' => 'EMPRESA')) }}
+            <br>
+            Seleccione de la lista la entidad financiera con la cual desea realizar el pago:<br>
+            <select class="form-control" name="bank">
+                @foreach($array as $bank)
+                <option value="{{$bank['bankCode']}}">{{$bank['bankName']}}</option>
+                @endforeach
+            </select>
+            <br>
+            {{Form::submit('Continuar')}}
+        {{ Form::close() }}
+    @endif
 </body>
 
 </html>

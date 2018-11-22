@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => '	America/Bogota',
+    'timezone' => 'America/Bogota',
 
     /*
     |--------------------------------------------------------------------------
@@ -175,6 +175,8 @@ return [
 
         // Mis providers
 
+        Collective\Html\HtmlServiceProvider::class,
+
     ],
 
     /*
@@ -225,6 +227,10 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         // Mis alias
+
+        'SoapHelper' => App\Helpers\SoapHelper::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
 
     ],
 
